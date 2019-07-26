@@ -5,10 +5,11 @@ const jwt = require("jsonwebtoken");
 const Users = require("./helpers");
 
 const { authenticate } = require("../auth/authenticate");
+const { validateBodyInfo } = require("../auth/body-check-middlware");
 
 module.exports = server => {
-  server.post("/api/register", register);
-  server.post("/api/login", login);
+  server.post("/api/register", validateBodyInfo, register);
+  server.post("/api/login", validateBodyInfo, login);
   server.get("/api/jokes", authenticate, getJokes);
 };
 
@@ -16,6 +17,7 @@ function register(req, res) {
   // implement user registration
   let user = req.body;
   console.log(user);
+
   const hash = bcrypt.hashSync(user.password, 10);
   user.password = hash;
 
